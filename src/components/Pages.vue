@@ -23,7 +23,7 @@ import Card from "@/components/CardInfo.vue";
     </div>
 
     <div class="top">
-      <a href="#"><img src="../../animal-crossing-load.png"></a>
+      <a href="#"><img src="../../public/animal-crossing-load.png"></a>
     </div>
 
   </div>
