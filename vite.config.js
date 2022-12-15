@@ -13,3 +13,7 @@ export default defineConfig({
   }
   base: '/Vue-reflection/'
 })
+
+module.exports = {
+    publicPath: '/Vue-reflection/'
+}
