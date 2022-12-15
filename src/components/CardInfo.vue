@@ -31,9 +31,6 @@ import {useRoute} from 'vue-router'
       `
     } else if(currentRoute === "fish" || currentRoute === "bugs") {
 
-      console.log(data[info -1].availability["month-array-northern"].toString().replaceAll(',', ', '));
-      
-
       document.querySelector('.info').innerHTML =
       `<img src="` + data[info -1].image_uri + `" alt="` + data[info -1].name["name-USen"] + ` icon" style="max-width:100%;">
       <h2 style="text-align: center;"> `+ data[info -1].name["name-USen"] + `</h2>
