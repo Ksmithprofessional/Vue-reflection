@@ -6,25 +6,25 @@
   <main>
     <div class="card">
 
-      <img src="../../pietro.png">
+      <img src="../../public/pietro.png">
       <RouterLink to="/villagers"><button>Villagers</button></RouterLink>
     </div>
 
     <div class="card">
 
-      <img src="../../sea-bass.png">
+      <img src="../../public/sea-bass.png">
       <RouterLink to="/fish"><button>Fish</button></RouterLink>
     </div>
 
     <div class="card">
 
-      <img src="../../tarantula.png">
+      <img src="../../public/tarantula.png">
       <RouterLink to="/bugs"><button>Bugs</button></RouterLink>
     </div>
 
     <div class="card">
 
-      <img src="../../juramaia.png">
+      <img src="../../public/juramaia.png">
       <RouterLink to="/fossils"><button>Fossils</button></RouterLink>
     </div>
   </main>
