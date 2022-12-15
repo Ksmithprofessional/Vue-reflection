@@ -5,7 +5,7 @@ import {useRoute} from 'vue-router'
   let currentRoute = useRoute().name;
   // console.log(currentRoute)
 
-  let url = `http://acnhapi.com/v1a/` + currentRoute;
+  let url = `https://acnhapi.com/v1a/` + currentRoute;
 
   const res = await fetch(url)
   const data = await res.json()
