@@ -1,16 +1,52 @@
 <script setup>
 
-import {useRoute} from 'vue-router'
+  import {useRoute} from 'vue-router'
+  import {ref} from 'vue'
 
   let currentRoute = useRoute().name;
   // console.log(currentRoute)
 
-  let url = `https://acnhapi.com/v1a/` + currentRoute;
+  let url = `http://acnhapi.com/v1a/` + currentRoute;
 
   const res = await fetch(url)
-  const data = await res.json()
+  let data = await res.json()
 
-  // console.log(data[0]);
+  let species = [];
+
+  data.forEach(info => {
+    // console.log(info.species);
+    species.push(info.species);
+  });
+  let speciesSet = new Set(species);
+  // console.log(speciesSet);
+
+
+  let rarity = [];
+if (currentRoute === 'fish' || currentRoute === 'bugs') {
+
+
+  data.forEach(info => {
+    // console.log(info.availability["rarity"]);
+    rarity.push(info.availability["rarity"]);
+  });
+}
+
+  let raritySet = new Set(rarity);
+  // console.log(raritySet);
+
+
+
+
+  // let filter = (b) => {
+
+  //   let filtered = b;
+  //   console.log(filtered);
+
+  //   let filteredData = data.filter(data => data.species === filtered);
+  //   console.log(filteredData);
+  // }
+
+  let filter = ref(0);
 
   let showInfo = (a) => {
 
@@ -19,29 +55,32 @@ import {useRoute} from 'vue-router'
     if(currentRoute === "villagers") {
 
       document.querySelector('.info').innerHTML =
-      `<img src="` + data[info -1].image_uri + `" alt="` + data[info -1].name["name-USen"] + ` icon" style="width:100%">
-      <h2 style="text-align: center;"> `+ data[info -1].name["name-USen"] + `</h2>
-      <p> Species: ` + data[info -1].species + `</p>
-      <p> Gender: ` + data[info -1].gender + `</p>
-      <p> Birthday: ` + data[info -1].birthday + `</p>
-      <p> Personality: ` + data[info -1].personality + `</p>
-      <p> Hobby: ` + data[info -1].hobby + `</p>
-      <p> Saying: ` + data[info -1].saying + `</p>
-      <p> Catch-phrase: ` + data[info -1]["catch-phrase"] + `</p>
+      `<img src="` + info.image_uri + `" alt="` + info.name["name-USen"] + ` icon" style="width:100%">
+      <h2 style="text-align: center;"> `+ info.name["name-USen"] + `</h2>
+      <p> Species: ` + info.species + `</p>
+      <p> Gender: ` + info.gender + `</p>
+      <p> Birthday: ` + info.birthday + `</p>
+      <p> Personality: ` + info.personality + `</p>
+      <p> Hobby: ` + info.hobby + `</p>
+      <p> Saying: ` + info.saying + `</p>
+      <p> Catch-phrase: ` + info["catch-phrase"] + `</p>
       `
     } else if(currentRoute === "fish" || currentRoute === "bugs") {
 
+      // console.log(info.availability["month-array-northern"].toString().replaceAll(',', ', '));
+      
+
       document.querySelector('.info').innerHTML =
-      `<img src="` + data[info -1].image_uri + `" alt="` + data[info -1].name["name-USen"] + ` icon" style="max-width:100%;">
-      <h2 style="text-align: center;"> `+ data[info -1].name["name-USen"] + `</h2>
+      `<img src="` + info.image_uri + `" alt="` + info.name["name-USen"] + ` icon" style="max-width:100%;">
+      <h2 style="text-align: center;"> `+ info.name["name-USen"] + `</h2>
       <p>Months available: </p>
-      <p> North: ` + data[info -1].availability["month-array-northern"].toString().replaceAll(',', ', ')  + `</p>
-      <p> South: ` + data[info -1].availability["month-array-southern"].toString().replaceAll(',', ', ') + `</p>
-      <p> Time: ` + data[info -1].availability["time-array"].toString().replaceAll(',', ', ') + `</p>
-      <p> Location: ` + data[info -1].availability["location"] + `</p>
-      <p> Rarity: ` + data[info -1].availability["rarity"] + `</p>
-      <p> Price: ` + data[info -1].price + ` bells</p>
-      <p> Catch-phrase: ` + data[info -1]["catch-phrase"] + `</p>
+      <p> North: ` + info.availability["month-array-northern"].toString().replaceAll(',', ', ')  + `</p>
+      <p> South: ` + info.availability["month-array-southern"].toString().replaceAll(',', ', ') + `</p>
+      <p> Time: ` + info.availability["time-array"].toString().replaceAll(',', ', ') + `</p>
+      <p> Location: ` + info.availability["location"] + `</p>
+      <p> Rarity: ` + info.availability["rarity"] + `</p>
+      <p> Price: ` + info.price + ` bells</p>
+      <p> Catch-phrase: ` + info["catch-phrase"] + `</p>
       `
     } else if(currentRoute === "fossils") {
 
@@ -60,13 +99,33 @@ import {useRoute} from 'vue-router'
 </script>
 
 <template>
-  <div class="card" v-for="info in data">
+
+  <select class="sort">
+
+    <option value="all" @click="filter = 0" style="position:unset;">All</option>
+    <option v-for= "info in speciesSet" @click="filter = info" style="position:unset;" v-if="currentRoute === 'villagers'">{{info}}</option>
+    <option v-for= "info in raritySet" @click="filter = info" style="position:unset;" v-if="currentRoute === 'fish' || currentRoute === 'bugs'">{{info}}</option>
+  </select>
+
+  <div class="card" v-if="currentRoute === 'villagers'" v-for="info in data.filter(data => data.species === filter)">
+    <img v-bind:src=" info.icon_uri ">
+    <h3>{{ info.name["name-USen"] }}</h3>
+    <button @click="showInfo(info)">More info</button>
+  </div>
+
+  <div class="card" v-if="filter === 0" v-for="info in data">
 
     <img v-if="currentRoute === 'fish' || currentRoute === 'bugs' || currentRoute === 'villagers'" v-bind:src=" info.icon_uri ">
     <img v-if="currentRoute === 'fossils'" v-bind:src=" info.image_uri ">
     <h3>{{ info.name["name-USen"] }}</h3>
-    <button v-if="currentRoute === 'fish' || currentRoute === 'bugs' || currentRoute === 'villagers'" @click="showInfo(info.id)">More info</button>
+    <button v-if="currentRoute === 'fish' || currentRoute === 'bugs' || currentRoute === 'villagers'" @click="showInfo(info)">More info</button>
     <button v-if="currentRoute === 'fossils'" @click="showInfo(info)">More info</button>
+  </div>
+
+  <div class="card" v-if="currentRoute === 'fish' || currentRoute === 'bugs'" v-for="info in data.filter(data => data.availability['rarity'] === filter)">
+    <img v-bind:src=" info.icon_uri ">
+    <h3>{{ info.name["name-USen"] }}</h3>
+    <button @click="showInfo(info)">More info</button>
   </div>
 </template>
 
@@ -90,5 +149,21 @@ button {
   bottom: 0px;
   left: 20%;
   right: 20%;
+}
+
+@media (min-width: 730px) {
+  .sort {
+
+grid-column-start:1;
+grid-column-end:3;
+  }
+}
+
+@media (min-width: 1260px) {
+  .sort {
+
+grid-column-start:1;
+grid-column-end:4;
+  }
 }
 </style>
