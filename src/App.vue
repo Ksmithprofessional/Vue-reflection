@@ -45,7 +45,7 @@ width: 400px;
   /* background-size: cover; */
   background-attachment: fixed;
   width:100vw;
-  /* height:100vh; */
+  min-height:87.5vh;
 }
 
 .cards {
