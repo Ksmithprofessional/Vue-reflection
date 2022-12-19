@@ -6,7 +6,7 @@
   let currentRoute = useRoute().name;
   // console.log(currentRoute)
 
-  let url = `https://acnhapi.com/v1a/` + currentRoute;
+  let url = `http://acnhapi.com/v1a/` + currentRoute;
 
   const res = await fetch(url)
   let data = await res.json()
@@ -46,11 +46,12 @@ if (currentRoute === 'fish' || currentRoute === 'bugs') {
   //   console.log(filteredData);
   // }
 
-  let filter = ref(0);
+  let filter = ref('');
 
   let showInfo = (a) => {
 
     let info = a;
+    //console.log(filter)
 
     if(currentRoute === "villagers") {
 
@@ -96,15 +97,25 @@ if (currentRoute === 'fish' || currentRoute === 'bugs') {
 
   }
 
+  //refs can't be updated normally, you have to update ref.value for it to work, hence filter.value works
+  //but filter wouldn't
+  let updateFilter = (e) => {
+
+    filter.value = e.target.value;
+    //console.log(filter)
+  }
+
+  // console.log(updateFilter(ref('Anteater')))
+
 </script>
 
 <template>
 
-  <select class="sort">
+  <select class="sort" v-on:change="updateFilter($event)">
 
-    <option value="all" @click="filter = 0" style="position:unset;">All</option>
-    <option v-for= "info in speciesSet" @click="filter = info" style="position:unset;" v-if="currentRoute === 'villagers'">{{info}}</option>
-    <option v-for= "info in raritySet" @click="filter = info" style="position:unset;" v-if="currentRoute === 'fish' || currentRoute === 'bugs'">{{info}}</option>
+    <option value="" style="position:unset;">All</option>
+    <option v-for= "info in speciesSet" style="position:unset;" v-if="currentRoute === 'villagers'">{{info}}</option>
+    <option v-for= "info in raritySet" style="position:unset;" v-if="currentRoute === 'fish' || currentRoute === 'bugs'">{{info}}</option>
   </select>
 
   <div class="card" v-if="currentRoute === 'villagers'" v-for="info in data.filter(data => data.species === filter)">
@@ -113,7 +124,7 @@ if (currentRoute === 'fish' || currentRoute === 'bugs') {
     <button @click="showInfo(info)">More info</button>
   </div>
 
-  <div class="card" v-if="filter === 0" v-for="info in data">
+  <div class="card" v-if="filter === ''" v-for="info in data">
 
     <img v-if="currentRoute === 'fish' || currentRoute === 'bugs' || currentRoute === 'villagers'" v-bind:src=" info.icon_uri ">
     <img v-if="currentRoute === 'fossils'" v-bind:src=" info.image_uri ">
@@ -154,16 +165,16 @@ button {
 @media (min-width: 730px) {
   .sort {
 
-grid-column-start:1;
-grid-column-end:3;
+    grid-column-start:1;
+    grid-column-end:3;
   }
 }
 
 @media (min-width: 1260px) {
   .sort {
 
-grid-column-start:1;
-grid-column-end:4;
+    grid-column-start:1;
+    grid-column-end:4;
   }
 }
 </style>
