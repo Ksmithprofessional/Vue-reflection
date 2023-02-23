@@ -23,7 +23,7 @@ import Card from "@/components/CardInfo.vue";
     </div>
 
     <div class="top">
-      <a href="#"><img src="../../public/animal-crossing-load.png"></a>
+      <a href="#"><img src="../../public/animal-crossing-load.png" alt="To top of page" title="Click to go back to the top"></a>
     </div>
 
   </div>
@@ -51,6 +51,7 @@ width: 67vw;
 
 .info {
 
+  display:none;
 position: fixed;
 max-width: 62vw;
 height: fit-content;
@@ -63,6 +64,7 @@ width: 100%;
 padding: 15px;
 /* left: 142px; */
 top: 150px;
+right: unset;
 color: white;
 font-size: 1.1rem;
 }
@@ -81,6 +83,39 @@ font-size: 1.1rem;
 
 .top img {
   width:100%;
+}
+
+@media (max-width: 390px) {
+
+.info-container {
+  width: 45vw;
+  height: 75vh;
+  overflow:scroll;
+}
+
+.info {
+  max-width: 50vw;
+  right: 10px;
+  max-height: 75vh;
+  overflow: scroll;
+}
+
+.top {
+  width: 50px;
+  height: 45px;
+}
+}
+
+@media (min-width: 391px) and (max-width: 450px) {
+
+.info-container {
+  width: 50vw;
+}
+
+.info {
+  max-width: 55vw;
+  right: 10px;
+}
 }
 
 @media (min-width: 730px) {

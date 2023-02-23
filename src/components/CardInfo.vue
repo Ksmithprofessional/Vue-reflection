@@ -1,7 +1,7 @@
 <script setup>
 
   import {useRoute} from 'vue-router'
-  import {ref} from 'vue'
+  import {ref, onBeforeMount, watch, onUnmounted, reactive} from 'vue'
 
   let currentRoute = useRoute().name;
   // console.log(currentRoute)
@@ -10,6 +10,62 @@
 
   const res = await fetch(url)
   let data = await res.json()
+
+  //possibly not needed as the unmounted function hopefully fixes the issue, but i'll leave it as a backup.
+  onBeforeMount(() => {
+    let x = ref(useRoute().name);
+    let y = reactive({x});
+
+    watch(() => y, () => {
+
+      // console.log(y.x);
+        let mountedInfo = data[0];
+        if(y.x === "villagers") {
+
+        document.querySelector('.info').innerHTML =
+        `<img src="` + mountedInfo.image_uri + `" alt="` + mountedInfo.name["name-USen"] + ` icon" style="width:100%">
+        <h2 style="text-align: center;"> `+ mountedInfo.name["name-USen"] + `</h2>
+        <p> Species: ` + mountedInfo.species + `</p>
+        <p> Gender: ` + mountedInfo.gender + `</p>
+        <p> Birthday: ` + mountedInfo.birthday + `</p>
+        <p> Personality: ` + mountedInfo.personality + `</p>
+        <p> Hobby: ` + mountedInfo.hobby + `</p>
+        <p> Saying: ` + mountedInfo.saying + `</p>
+        <p> Catch-phrase: ` + mountedInfo["catch-phrase"] + `</p>
+        `
+        } else if(y.x === "fish" || y.x === "bugs") {
+
+        // console.log(info.availability["month-array-northern"].toString().replaceAll(',', ', '));
+
+
+        document.querySelector('.info').innerHTML =
+        `<img src="` + mountedInfo.image_uri + `" alt="` + mountedInfo.name["name-USen"] + ` icon" style="max-width:100%;">
+        <h2 style="text-align: center;"> `+ mountedInfo.name["name-USen"] + `</h2>
+        <p>Months available: </p>
+        <p> North: ` + mountedInfo.availability["month-array-northern"].toString().replaceAll(',', ', ')  + `</p>
+        <p> South: ` + mountedInfo.availability["month-array-southern"].toString().replaceAll(',', ', ') + `</p>
+        <p> Time: ` + mountedInfo.availability["time-array"].toString().replaceAll(',', ', ') + `</p>
+        <p> Location: ` + mountedInfo.availability["location"] + `</p>
+        <p> Rarity: ` + mountedInfo.availability["rarity"] + `</p>
+        <p> Price: ` + mountedInfo.price + ` bells</p>
+        <p> Catch-phrase: ` + mountedInfo["catch-phrase"] + `</p>
+        `
+        } else if(y.x === "fossils") {
+
+        document.querySelector('.info').innerHTML =
+        `<img src="` + mountedInfo.image_uri + `" alt="` + mountedInfo.name["name-USen"] + ` icon" class="info-img" style="margin: 0 27%; width: 45%; height: 45%;">
+        <h2 style="text-align: center;"> `+ mountedInfo.name["name-USen"] + `</h2>
+        <p> Price: ` + mountedInfo.price + `</p>
+        <p> Part of: ` + mountedInfo["part-of"] + `</p>
+        <p> Museum quote: ` + mountedInfo["museum-phrase"] + `</p>
+        `
+
+        }
+      },
+      {
+        immediate: true
+      });
+  });
 
   let species = [];
 
@@ -22,20 +78,17 @@
 
 
   let rarity = [];
-if (currentRoute === 'fish' || currentRoute === 'bugs') {
+  if (currentRoute === 'fish' || currentRoute === 'bugs') {
 
 
-  data.forEach(info => {
-    // console.log(info.availability["rarity"]);
-    rarity.push(info.availability["rarity"]);
-  });
-}
+    data.forEach(info => {
+      // console.log(info.availability["rarity"]);
+      rarity.push(info.availability["rarity"]);
+    });
+  }
 
   let raritySet = new Set(rarity);
   // console.log(raritySet);
-
-
-
 
   // let filter = (b) => {
 
@@ -46,12 +99,17 @@ if (currentRoute === 'fish' || currentRoute === 'bugs') {
   //   console.log(filteredData);
   // }
 
+  //works but breaks when going back to the home page
+  onUnmounted(() => document.querySelector('.info').style = "display:none;")
+
   let filter = ref('');
 
   let showInfo = (a) => {
 
     let info = a;
-    //console.log(filter)
+    // console.log(filter)
+
+    document.querySelector('.info').style = "display:block;";
 
     if(currentRoute === "villagers") {
 
@@ -102,7 +160,7 @@ if (currentRoute === 'fish' || currentRoute === 'bugs') {
   let updateFilter = (e) => {
 
     filter.value = e.target.value;
-    //console.log(filter)
+    // console.log(filter)
   }
 
   // console.log(updateFilter(ref('Anteater')))
@@ -142,6 +200,11 @@ if (currentRoute === 'fish' || currentRoute === 'bugs') {
 
 <style scoped>
 
+.sort {
+
+  margin: 10px 0 5px 5px;
+}
+
 .card {
 
   margin: 5px;
@@ -150,14 +213,19 @@ if (currentRoute === 'fish' || currentRoute === 'bugs') {
   border-radius: 5%;
   background-color: #385e72;
   color: white;
-  height: 220px;
+  height: 235px;
+}
+
+.card h3 {
+
+  font-size: 1.3rem;
 }
 
 button {
 
   position: absolute;
   width: 60%;
-  bottom: 0px;
+  bottom: 5px;
   left: 20%;
   right: 20%;
 }
@@ -167,6 +235,7 @@ button {
 
     grid-column-start:1;
     grid-column-end:3;
+    margin-left: 0;
   }
 }
 
