@@ -1,5 +1,7 @@
 <script setup>
+import {onUnmounted} from 'vue'
 
+onUnmounted(() => document.querySelector('.info').style = "display:none;")
 </script>
 
 <template>
@@ -28,6 +30,7 @@
       <RouterLink to="/fossils"><button>Fossils</button></RouterLink>
     </div>
   </main>
+  <div class="info"></div>
 </template>
 
 <style scoped>
